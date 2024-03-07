@@ -1,0 +1,14 @@
+{# templates/friendship/send_request.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Send Friend Request{% endblock %}
+
+{% block body %}
+    <h1>Send Friend Request</h1>
+
+    {{ form_start(form) }}
+        {{ form_row(form.friend) }}
+        <button type="submit" class="btn btn-primary">Send Request</button>
+    {{ form_end(form) }}
+{% endblock %}

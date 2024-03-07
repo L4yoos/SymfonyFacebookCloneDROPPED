@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello TestController!{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div class="example-wrapper">
+    {% if app.user %}
+        <div class="mb-3">
+            You are logged in as {{ app.user.email }}, <a href="{{ path('app_logout') }}">Logout</a>
+        </div>
+    {% endif %}
+    <h1>All Users</h1>
+
+    <ul>
+    {% for user in users %}
+        <li>{{ user.firstname }} {{ user.lastname }}<a href="{{ path('send_friend_request', {'id': user.id}) }}" class="btn btn-primary">Add Friend</a></li>
+    {% endfor %}
+    </ul>
+
+
+    <h1>Friends</h1>
+    <ul>
+        {% for friend in friends %}
+            <li>{{ friend.firstname }} {{ friend.lastname }}</li>
+        {% endfor %}
+    </ul>
+
+    <h1>Invites</h1>
+    <ul>
+        {% for invite in invites %}
+                <li>{{ invite.firstname  }} {{ invite.lastname  }}<a href="{{ path('accept_friend_request', {'id': invite.id}) }}" class="btn btn-primary">Add Friend</a></li>
+        {% endfor %}
+    </ul>
+    This friendly message is coming from:
+    <ul>
+        <li>Your controller at <code><a href="{{ 'C:/Users/dalec/OneDrive/Dokumenty/GitHub/SymfonyFacebookClone/website-skeleton/src/Controller/TestController.php'|file_link(0) }}">src/Controller/TestController.php</a></code></li>
+        <li>Your template at <code><a href="{{ 'C:/Users/dalec/OneDrive/Dokumenty/GitHub/SymfonyFacebookClone/website-skeleton/templates/test/index.html.twig'|file_link(0) }}">templates/test/index.html.twig</a></code></li>
+    </ul>
+</div>
+{% endblock %}

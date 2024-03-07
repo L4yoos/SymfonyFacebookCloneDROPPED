@@ -1,0 +1,18 @@
+{# templates/friendship/invitation_list.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Friendship Invitations{% endblock %}
+
+{% block body %}
+    <h1>Friendship Invitations</h1>
+
+    <ul>
+        {% for invitation in invitations %}
+            <li>
+                {{ invitation.sender.username }} sent you a friend request.
+                <a href="{{ path('accept_friend_request', {'id': invitation.id}) }}">Accept</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
