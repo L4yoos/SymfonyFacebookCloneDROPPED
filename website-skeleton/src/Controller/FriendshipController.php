@@ -50,10 +50,71 @@ class FriendshipController extends AbstractController
         }
 
         $friendship->setStatus('accepted');
+        $entityManager->flush();
 
+        $reverseFriendship = new Friendship();
+        $reverseFriendship->setUser($friendship->getFriend());
+        $reverseFriendship->setFriend($friendship->getUser());
+        $reverseFriendship->setStatus('accepted');
+
+        $entityManager->persist($reverseFriendship);
         $entityManager->flush();
 
         $this->addFlash('success', 'Zaproszenie do znajomych zostało zaakceptowane.');
+        return $this->redirectToRoute('index');
+    }
+
+    #[Route('/remove-friend/{id}', name: 'remove_friend')]
+    public function removeFriend(Request $request, int $id, EntityManagerInterface $entityManager): Response
+    {
+        $friendship = $entityManager->getRepository(FriendShip::class)->find($id);
+
+        if (!$friendship) {
+            throw $this->createNotFoundException('Friendship not found');
+        }
+
+        $reverseFriendship = $entityManager->getRepository(FriendShip::class)->findOneBy([
+            'user' => $friendship->getFriend(),
+            'friend' => $friendship->getUser()
+        ]);
+
+        if ($reverseFriendship) {
+            $entityManager->remove($friendship);
+            $entityManager->remove($reverseFriendship);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Znajomy został usunięty.');
+        } else {
+            $this->addFlash('error', 'Wystąpił błąd podczas usuwania znajomego.');
+        }
+
+        return $this->redirectToRoute('index');
+    }
+
+    #[Route('/block-friend/{id}', name: 'block_friend')]
+    public function blockFriend(Request $request, int $id, EntityManagerInterface $entityManager): Response
+    {
+        $friendship = $entityManager->getRepository(FriendShip::class)->find($id);
+
+        if (!$friendship) {
+            throw $this->createNotFoundException('Friendship not found');
+        }
+
+        $reverseFriendship = $entityManager->getRepository(FriendShip::class)->findOneBy([
+            'user' => $friendship->getFriend(),
+            'friend' => $friendship->getUser()
+        ]);
+
+        if ($reverseFriendship) {
+            $reverseFriendship->setBlocked(true);
+            $friendship->setBlocked(true);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Znajomy został usunięty.');
+        } else {
+            $this->addFlash('error', 'Wystąpił błąd podczas usuwania znajomego.');
+        }
+
         return $this->redirectToRoute('index');
     }
 }

@@ -48,9 +48,11 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     public function findUsersToAddAsFriend(User $user): array
     {
         return $this->createQueryBuilder('u')
-            ->leftJoin('App\Entity\FriendShip', 'f', 'WITH', 'f.user = :user AND f.friend = u')
+            ->leftJoin('App\Entity\FriendShip', 'f1', 'WITH', 'f1.user = :user AND f1.friend = u')
+            ->leftJoin('App\Entity\FriendShip', 'f2', 'WITH', 'f2.friend = :user AND f2.user = u')
             ->andWhere('u != :user')
-            ->andWhere('f.id IS NULL')
+            ->andWhere('f1.id IS NULL')
+            ->andWhere('f2.id IS NULL')
             ->setParameter('user', $user)
             ->getQuery()
             ->getResult();
@@ -65,14 +67,16 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
      */
     public function findFriends(User $user): array
     {
-        return $this->createQueryBuilder('u')
-            ->join('u.friendships', 'f')
-            ->andWhere('f.user = :user OR f.friend = :user')
-            ->andWhere('f.status = :status')
-            ->setParameter('user', $user)
-            ->setParameter('status', 'accepted')
-            ->getQuery()
-            ->getResult();
+        return $this->createQueryBuilder('f')
+        ->where('(
+            (f.user = :user AND f.friend != :user) OR 
+            (f.friend = :user AND f.user != :user)
+        )')
+        ->andWhere('f.status = :status')
+        ->setParameter('user', $user)
+        ->setParameter('status', 'accepted')
+        ->getQuery()
+        ->getResult();
     }
 
     /**

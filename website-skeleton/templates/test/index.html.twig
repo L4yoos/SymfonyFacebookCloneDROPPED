@@ -25,9 +25,14 @@
 
     <h1>Friends</h1>
     <ul>
-        {% for friend in friends %}
-            <li>{{ friend.firstname }} {{ friend.lastname }}</li>
-        {% endfor %}
+    {% for friend in friends %}
+        {% if friend.user.id != app.user.id %}
+            {% if not friend.isBlocked %}
+                <li>{{ friend.user.firstname }}<a href="{{ path('remove_friend', {'id': friend.id}) }}" class="btn btn-primary">Remove Friend</a></li>
+                <li><a href="{{ path('block_friend', {'id': friend.id}) }}" class="btn btn-primary">Block Friend</a></li>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
     </ul>
 
     <h1>Invites</h1>

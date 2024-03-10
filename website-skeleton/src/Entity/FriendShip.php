@@ -25,6 +25,9 @@ class FriendShip
     #[ORM\Column(length: 255)]
     private ?string $status;
 
+    #[ORM\Column(type: 'boolean')]
+    private ?bool $isBlocked = false;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -62,6 +65,18 @@ class FriendShip
     public function setStatus(string $status): self
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function isBlocked(): bool
+    {
+        return $this->isBlocked;
+    }
+
+    public function setBlocked(bool $isBlocked): self
+    {
+        $this->isBlocked = $isBlocked;
 
         return $this;
     }

@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ProfileController!{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div class="example-wrapper">
+    <h1>Hello {{ user.firstname }} {{ user.lastname }}! ✅</h1>
+    <li>Date Of Birth: {{ user.dateOfBirth ? user.dateOfBirth.format('Y-m-d') : 'Unknown' }}</li>
+    <li>Gender: {{ user.gender }}</li>
+    {% if app.user and app.user.id == user.id %}
+        <a href="{{ path('profile_edit', {'id': user.id}) }}" class="btn btn-primary">Edit Profile</a>
+    {% endif %}
+    This friendly message is coming from:
+    <ul>
+        <li>Your controller at <code><a href="{{ 'C:/Users/dalec/OneDrive/Dokumenty/GitHub/SymfonyFacebookClone/website-skeleton/src/Controller/ProfileController.php'|file_link(0) }}">src/Controller/ProfileController.php</a></code></li>
+        <li>Your template at <code><a href="{{ 'C:/Users/dalec/OneDrive/Dokumenty/GitHub/SymfonyFacebookClone/website-skeleton/templates/profile/index.html.twig'|file_link(0) }}">templates/profile/index.html.twig</a></code></li>
+    </ul>
+</div>
+{% endblock %}

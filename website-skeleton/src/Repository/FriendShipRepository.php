@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\FriendShip;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -37,6 +38,17 @@ class FriendShipRepository extends ServiceEntityRepository
             ->addSelect('u.lastname')
             ->leftJoin('f.friend', 'f2')
             ->addSelect('f.id')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findFriends(int $userId): array
+    {
+        return $this->createQueryBuilder('f')
+            ->andWhere('f.user = :userId OR f.friend = :userId')
+            ->andWhere('f.status = :status')
+            ->setParameter('userId', $userId)
+            ->setParameter('status', 'accepted')
             ->getQuery()
             ->getResult();
     }

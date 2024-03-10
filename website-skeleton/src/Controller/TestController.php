@@ -22,7 +22,7 @@ class TestController extends AbstractController
 
         $users = $userRepository->findUsersToAddAsFriend($user);
 
-        $friends = $userRepository->findFriends($user);
+        $friends = $friendShipRepository->findFriends($user->getId());
 
         $invites = $friendShipRepository->findFriendshipInvitations($user);
 
