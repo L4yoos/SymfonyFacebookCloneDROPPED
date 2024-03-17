@@ -87,6 +87,30 @@ class ProfileFormType extends AbstractType
                 'Male' => 'Male',
             ],
         ])
+        ->add('job', ChoiceType::class, [
+            'label' => 'Job',
+            'required' => false,
+            'choices' => [
+                'Unemployed' => 'Unemployed',
+                'Developer' => 'Developer',
+            ],
+        ])
+        ->add('school', ChoiceType::class, [
+            'label' => 'School',
+            'required' => false,
+            'choices' => [
+                'Elementary School' => 'Elementary',
+                'High school' => 'High',
+            ],
+        ])
+        ->add('interests', ChoiceType::class, [
+            'label' => 'Interests',
+            'required' => false,
+            'choices' => [
+                'Hobby 1' => 'Hobby 1',
+                'Hobby 2' => 'Hobby 2',
+            ],
+        ])
         ;
     }
 

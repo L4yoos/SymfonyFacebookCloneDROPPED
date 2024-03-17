@@ -1,0 +1,13 @@
+{# post/like.html.twig #}
+{% if post.isLikedByUser(app.user.id) %}
+    <form action="{{ path('post_like', {'id': post.id}) }}" method="post" style="display: inline;">
+        <input type="hidden" name="_token" value="{{ csrf_token('like' ~ post.id) }}">
+        <input type="hidden" name="_method" value="DELETE">
+        <button type="submit">Unlike</button>
+    </form>
+{% else %}
+    <form action="{{ path('post_like', {'id': post.id}) }}" method="post" style="display: inline;">
+        <input type="hidden" name="_token" value="{{ csrf_token('like' ~ post.id) }}">
+        <button type="submit">Like</button>
+    </form>
+{% endif %}

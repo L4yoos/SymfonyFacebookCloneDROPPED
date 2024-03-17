@@ -1,0 +1,17 @@
+{# templates/post/delete.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Delete Post{% endblock %}
+
+{% block body %}
+    <h1>Delete Post</h1>
+
+    <p>Are you sure you want to delete this post?</p>
+
+    <form method="post">
+        <input type="hidden" name="_method" value="DELETE">
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a href="{{ path('post_index') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+{% endblock %}

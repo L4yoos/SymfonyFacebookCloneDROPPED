@@ -3,6 +3,5 @@ controllers:
     type: attribute
 
 index:
-    path: /test
-    # the controller value has the format 'controller_class::method_name'
+    path: /
     controller: App\Controller\TestController::index

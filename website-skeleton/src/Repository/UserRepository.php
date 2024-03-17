@@ -39,6 +39,16 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
     }
 
+
+    public function searchUsers(string $searchTerm): array
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.firstname LIKE :term OR u.lastname LIKE :term')
+            ->setParameter('term', '%'.$searchTerm.'%')
+            ->getQuery()
+            ->getResult();
+    }
+
     /**
      * Znajdź użytkowników, którzy nie są jeszcze znajomymi danego użytkownika.
      *

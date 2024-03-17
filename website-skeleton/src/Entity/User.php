@@ -47,8 +47,49 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(type: 'boolean')]
-    private $isVerified = false;
+    private ?bool $isVerified = false;
 
+    
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    private ?string $profilePictureFilename = null;
+
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    private ?string $coverPhotoFilename = null;
+
+    #[Assert\Image(
+        maxWidth: 1200,
+        maxHeight: 1200,
+        maxSize: "5M",
+        mimeTypes: ["image/jpeg", "image/png"],
+        allowPortrait: false,
+        allowLandscape: false,
+        allowSquare: true,
+        mimeTypesMessage: "Please upload a valid image (JPEG or PNG).",
+        maxSizeMessage: "The file is too large ({{ size }} {{ suffix }}). Max allowed size is {{ limit }} {{ suffix }}."
+    )]
+    private ?File $profilePictureFile = null;
+
+    #[Assert\Image(
+        maxWidth: 2000,
+        maxHeight: 2000,
+        maxSize: "5M",
+        mimeTypes: ["image/jpeg", "image/png"],
+        allowPortrait: false,
+        allowLandscape: false,
+        allowSquare: true,
+        mimeTypesMessage: "Please upload a valid image (JPEG or PNG).",
+        maxSizeMessage: "The file is too large ({{ size }} {{ suffix }}). Max allowed size is {{ limit }} {{ suffix }}."
+    )]
+    private ?File $coverPhotoFile = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?string $job = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?string $school = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?string $interests = null;
     // #[ORM\Column(type: 'boolean')]
     // private bool $agreeTerms = false;
 
@@ -205,10 +246,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: FriendShip::class, mappedBy: "friend")]
     private Collection $friendOf;
 
+    #[ORM\OneToMany(targetEntity: Like::class, mappedBy: "user")]
+    private Collection $likes;
+
     public function __construct()
     {
         $this->friendships = new ArrayCollection();
         $this->friendOf = new ArrayCollection();
+        $this->likes = new ArrayCollection();
     }
 
     /**
@@ -225,5 +270,109 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getFriendOf(): Collection
     {
         return $this->friendOf;
+    }
+
+    /**
+     * @return Collection|Like[]
+     */
+    public function getLikes(): Collection
+    {
+        return $this->likes;
+    }
+
+    public function getProfilePictureFilename(): ?string
+    {
+        return $this->profilePictureFilename;
+    }
+
+    public function setProfilePictureFilename(?string $profilePictureFilename): self
+    {
+        $this->profilePictureFilename = $profilePictureFilename;
+
+        return $this;
+    }
+
+    public function getCoverPhotoFilename(): ?string
+    {
+        return $this->coverPhotoFilename;
+    }
+
+    public function setCoverPhotoFilename(?string $coverPhotoFilename): self
+    {
+        $this->coverPhotoFilename = $coverPhotoFilename;
+
+        return $this;
+    }
+
+    // Getters and setters for profilePictureFile and coverPhotoFile
+
+    public function getProfilePictureFile(): ?File
+    {
+        return $this->profilePictureFile;
+    }
+
+    public function setProfilePictureFile(?File $profilePictureFile): self
+    {
+        $this->profilePictureFile = $profilePictureFile;
+
+        if ($profilePictureFile) {
+            // It's important that we remove the old profile picture filename to trigger the upload
+            $this->profilePictureFilename = null;
+        }
+
+        return $this;
+    }
+
+    public function getCoverPhotoFile(): ?File
+    {
+        return $this->coverPhotoFile;
+    }
+
+    public function setCoverPhotoFile(?File $coverPhotoFile): self
+    {
+        $this->coverPhotoFile = $coverPhotoFile;
+
+        if ($coverPhotoFile) {
+            // It's important that we remove the old cover photo filename to trigger the upload
+            $this->coverPhotoFilename = null;
+        }
+
+        return $this;
+    }
+
+    public function getJob(): ?string
+    {
+        return $this->job;
+    }
+
+    public function setJob(?string $job): static
+    {
+        $this->job = $job;
+
+        return $this;
+    }
+
+    public function getSchool(): ?string
+    {
+        return $this->school;
+    }
+
+    public function setSchool(?string $school): static
+    {
+        $this->school = $school;
+
+        return $this;
+    }
+
+    public function getInterests(): ?string
+    {
+        return $this->interests;
+    }
+
+    public function setInterests(?string $interests): static
+    {
+        $this->interests = $interests;
+
+        return $this;
     }
 }

@@ -1,0 +1,15 @@
+{# templates/profile/upload_profile_picture.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Upload Profile Picture{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1>Upload Profile Picture</h1>
+    {{ form_start(form) }}
+        {{ form_row(form.profilePicture, {'attr': {'class': 'form-control'}}) }}
+        <button type="submit" class="btn btn-primary mt-3">Upload</button>
+    {{ form_end(form) }}
+</div>
+{% endblock %}

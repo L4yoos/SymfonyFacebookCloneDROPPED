@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Search Users{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1>Search Users</h1>
+    <form action="{{ path('search_users') }}" method="get">
+        <div class="mb-3">
+            <label for="searchTerm" class="form-label">Search for Users:</label>
+            <input type="text" id="searchTerm" name="searchTerm" class="form-control" placeholder="Enter username or email">
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+    {% if users %}
+        <h2>Search Results:</h2>
+        <ul>
+            {% for user in users %}
+                <li><a href="{{ path('profile', {'id': user.id}) }}" class="btn btn-primary">{{ user.firstname }} {{ user.lastname }}</a></li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</div>
+{% endblock %}
