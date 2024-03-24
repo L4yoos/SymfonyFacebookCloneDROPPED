@@ -16,6 +16,17 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class PostController extends AbstractController
 {
+
+    #[Route('/post/{id}', name: 'post')]
+    public function show(int $id, EntityManagerInterface $entityManager): Response
+    {
+        $post = $entityManager->getRepository(Post::class)->find($id);
+
+        return $this->render('post/show.html.twig', [
+            'post' => $post,
+        ]);
+    }
+    
     #[Route('/post/new', name: 'post_new')]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {

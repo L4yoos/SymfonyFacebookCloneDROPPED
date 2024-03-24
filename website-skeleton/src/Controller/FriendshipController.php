@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Entity\FriendShip;
+use App\Service\NotificationService;
 use App\Form\FriendRequestType;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,27 +16,25 @@ class FriendshipController extends AbstractController
     #[Route('/send-friend-request/{id}', name: 'send_friend_request')]
     public function sendFriendRequest(Request $request, UserRepository $userRepository, EntityManagerInterface $entityManager, int $id): Response
     {
-        // Pobierz aktualnie zalogowanego użytkownika
         $currentUser = $this->getUser();
         
-        // Pobierz użytkownika, któremu ma być wysłane zaproszenie
         $userToAdd = $userRepository->find($id);
         
-        // Sprawdź czy użytkownik istnieje
         if (!$userToAdd) {
             throw $this->createNotFoundException('User not found');
         }
     
-        // Utwórz nowe zaproszenie do znajomych
         $friendship = new Friendship();
         $friendship->setUser($currentUser);
         $friendship->setFriend($userToAdd);
         $friendship->setStatus('pending');
     
-        // Zapisz zaproszenie do bazy danych
         $entityManager->persist($friendship);
         $entityManager->flush();
     
+        $notificationService = new NotificationService($entityManager);
+        $notificationService->createNotification("friend_request", $userToAdd, null, $currentUser->getId(), $currentUser);
+
         $this->addFlash('success', 'Zaproszenie do znajomych zostało wysłane.');
         return $this->redirectToRoute('index');
     }    

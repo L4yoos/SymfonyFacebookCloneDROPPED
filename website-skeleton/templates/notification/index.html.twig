@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello NotificationController!{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div class="dropdown">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Notifications
+        {% if notifications|length > 0 %}
+            <span class="badge badge-danger">{{ notifications|length }}</span>
+        {% endif %}
+    </button>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        {% if notifications is not empty %}
+            {% for notification in notifications %}
+                <a class="dropdown-item" href="{{ path('notification_mark_as_read', {'id': notification.id}) }}">{{ notification.message }}</a></br>
+            {% endfor %}
+        {% else %}
+            <a class="dropdown-item" href="#">No new notifications</a>
+        {% endif %}
+    </div>
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    var dropdownMenu = document.querySelector(".dropdown-menu");
+
+    // Pobierz powiadomienia za pomocą AJAX
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "{{ path('get_notifications') }}", true);
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            var notifications = JSON.parse(xhr.responseText);
+            notifications.forEach(function(notification) {
+                var item = document.createElement("a");
+                item.classList.add("dropdown-item");
+                item.href = notification.link;
+                item.textContent = notification.message;
+                dropdownMenu.appendChild(item);
+            });
+        }
+    };
+    xhr.send();
+});
+</script>
+{% endblock %}

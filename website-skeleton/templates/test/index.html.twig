@@ -16,6 +16,37 @@
     {% endif %}
     <h1>All Users</h1>
 
+<div class="dropdown">
+  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Powiadomienia
+  </button>
+  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+
+  </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var dropdownMenu = document.querySelector(".dropdown-menu");
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "{{ path('notifications') }}", true);
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                var notifications = JSON.parse(xhr.responseText);
+                notifications.forEach(function(notification) {
+                    var item = document.createElement("a");
+                    item.classList.add("dropdown-item");
+                    item.href = notification.link;
+                    item.textContent = notification.message;
+                    dropdownMenu.appendChild(item);
+                });
+            }
+        };
+        xhr.send();
+    });
+</script>
+
     <form action="{{ path('search_users') }}" method="get">
         <div class="mb-3">
             <label for="searchTerm" class="form-label">Search for Users:</label>
@@ -57,7 +88,7 @@
     <h1>Posts</h1>
 
     <ul>
-{% for post in posts %}
+    {% for post in posts %}
     <li>
         <br>
         {{ post.content }}<br>

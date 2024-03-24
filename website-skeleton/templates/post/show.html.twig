@@ -1,0 +1,51 @@
+
+<li>
+    <br>
+    {{ post.content }}<br>
+    {% if post.attachment %}
+        {% set extension = post.attachment|split('.')|last %}
+        {% if extension in ['jpg', 'jpeg', 'png', 'gif', 'avif'] %}
+            <h2>Cover Photo</h2>
+            <img src="{{ asset('uploads/attachments/' ~ post.attachment) }}" alt="Cover Photo" class="cover-photo">
+        {% elseif extension in ['mp4', 'mov', 'avi', 'wmv'] %}
+            <h2>Video Attachment</h2>
+            <video controls>
+                <source src="{{ asset('uploads/attachments/' ~ post.attachment) }}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        {% else %}
+            <h2>Attachment</h2>
+            <p>This attachment type is not supported.</p>
+        {% endif %}
+    {% endif %}
+    Author: {{ post.author.firstname }} {{ post.author.lastname }}<br>
+    Created at: {{ post.createdAt | date('Y-m-d H:i:s') }}<br>
+    Updated at: {{ post.updatedAt | date('Y-m-d H:i:s') }}<br>   
+    Likes: {{ post.likesCount }}<br>   
+
+    {% include 'post/like.html.twig' %}
+
+    <h3>Comments:</h3>
+    <ul>
+        {% for comment in post.comments %}
+            <li>
+                {{ comment.content }} - by {{ comment.author.firstname }} {{ comment.author.lastname }}
+            </li>
+        {% endfor %}
+    </ul>
+
+    <form action="{{ path('post_comment', {'id': post.id}) }}" method="post">
+        <textarea name="content" rows="3" cols="50"></textarea><br>
+        <input type="submit" value="Add Comment">
+        <input type="hidden" name="_token" value="{{ csrf_token('add_comment' ~ post.id) }}">
+    </form>
+
+    {% if post.author and post.author.id == app.user.id %}
+        <a href="{{ path('post_edit', {'id': post.id}) }}">Edit</a>
+        <form action="{{ path('post_delete', {'id': post.id}) }}" method="post" style="display: inline;">
+            <input type="hidden" name="_method" value="DELETE">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ post.id) }}">
+            <button type="submit">Delete</button>
+        </form>
+    {% endif %}
+</li>
